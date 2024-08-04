@@ -1,0 +1,48 @@
+body {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px; /* Espacio entre las columnas */
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+.zonaDeJuego {
+    background-color: green;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 5px solid red;
+}
+
+.usuarioStats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10%;
+    border: 2px solid black;
+    padding: 20px;
+    background-color: lightgray;
+}
+
+.inputUsuario {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.buttonUsuario {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.punto {
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    position: absolute;
+    border-radius: 50%;
+    
+}
