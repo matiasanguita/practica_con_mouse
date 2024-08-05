@@ -9,28 +9,23 @@
 </head>
 
 <body id="body">
+    <div class="ordenarElJuego">
+        <div class="zonaDeJuego"></div>
 
-    <div class="zonaDeJuego">
-
-    </div>
-
-    <div class="usuarioStats">
-        <div class="ingresarUsuario">
-            <input type="text" id="usuarioInput" placeholder="Ingresa tu usuario">
-            <button id="enviarButton" class="buttonUsuario">Enviar</button>
+        <div class="usuarioStats">
+            <div class="ingresarUsuario">
+                <input type="text" id="usuarioInput" placeholder="Ingresa tu usuario">
+                <button id="enviarButton" class="buttonUsuario">Enviar</button>
+            </div>
+            <div id="mensajeBienvenida"></div>
+            <div class="puntosContador">
+                <p id="contadorPuntos">Actualmente tienes puntos: 0</p>
+                <button id="resetButton" class="buttonReset">Resetear Contador</button>
+            </div>
+            <div id="highscoreHistorico"></div>
         </div>
-        <div id="mensajeBienvenida"></div>
-        <div class="puntosContador">
-            <p id="contadorPuntos">Actualmente tienes puntos: 0</p>
-            <button id="resetButton" class="buttonReset">Resetear Contador</button>
-        </div>
     </div>
-
-
-
-
-
-    <script src="./script.js"></script>
+    
 </body>
-
+<script src="./script.js"></script>
 </html>

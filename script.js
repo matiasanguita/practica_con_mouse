@@ -1,69 +1,113 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
     // Elementos del DOM
-    const zonaDeJuego = document.querySelector('.zonaDeJuego');
-    const inputUsuario = document.getElementById('usuarioInput');
-    const botonEnviar = document.getElementById('enviarButton');
-    const mensajeBienvenida = document.getElementById('mensajeBienvenida');
-    const contadorPuntos = document.getElementById('contadorPuntos');
-    const botonReset = document.getElementById('resetButton');
+    let zonaDeJuego = document.querySelector('.zonaDeJuego');
+    let inputUsuario = document.getElementById('usuarioInput');
+    let botonEnviar = document.getElementById('enviarButton');
+    let mensajeBienvenida = document.getElementById('mensajeBienvenida');
+    let contadorPuntos = document.getElementById('contadorPuntos');
+    let botonReset = document.getElementById('resetButton');
+    let highscoreHistorico = document.getElementById('highscoreHistorico');
 
     let puntos = 0;
     let nombreUsuario = localStorage.getItem('nombreUsuario') || '';
+    let highscore = JSON.parse(localStorage.getItem('highscore')) || { score: 0, user: '' };
 
     // Función para crear un nuevo punto
     function crearPunto() {
-        const punto = document.createElement('div');
+        let punto = document.createElement('div');
         punto.classList.add('punto');
-        const maxX = zonaDeJuego.clientWidth - 10;
-        const maxY = zonaDeJuego.clientHeight - 10;
-        const x = Math.floor(Math.random() * maxX);
-        const y = Math.floor(Math.random() * maxY);
-        punto.style.left = `${x}px`;
-        punto.style.top = `${y}px`;
+        let maxX = zonaDeJuego.clientWidth - 10;
+        let maxY = zonaDeJuego.clientHeight - 10;
+        let x = Math.floor(Math.random() * maxX);
+        let y = Math.floor(Math.random() * maxY);
+        punto.style.left = `${x}px`; // Usar comillas invertidas para interpolación
+        punto.style.top = `${y}px`;  // Usar comillas invertidas para interpolación
 
-        // Evento de clic en el punto
-        punto.addEventListener('click', () => {
-            puntos++;
-            contadorPuntos.textContent = `Actualmente, ${nombreUsuario} tiene ${puntos} puntos.`;
+        punto.addEventListener('click', function () {
+            if (nombreUsuario === "MatiasGOD") {
+                puntos += Math.floor(Math.random() * 5 + 1);
+            } else {
+                puntos++;
+            }
+            actualizarContador();
             zonaDeJuego.removeChild(punto);
             crearPunto();
+            actualizarHighscore();
         });
+
         zonaDeJuego.appendChild(punto);
     }
 
-    // Iniciar el juego creando el primer punto
-    crearPunto();
 
-    // Si hay un nombre de usuario almacenado, mostrar mensaje de bienvenida
-    if (nombreUsuario) {
-        mensajeBienvenida.textContent = `¡Bienvenido de nuevo, ${nombreUsuario}!`;
-        contadorPuntos.textContent = `Actualmente, ${nombreUsuario} tiene ${puntos} puntos.`;
+    // Función para reiniciar el juego
+    function resetearJuego() {
+        while (zonaDeJuego.firstChild) {
+            zonaDeJuego.removeChild(zonaDeJuego.firstChild);
+        }
+        crearPunto();
     }
 
-    // Ingreso del nombre de usuario
-    botonEnviar.addEventListener('click', () => {
+    // Función para actualizar el contador de puntos en pantalla
+    function actualizarContador() {
+        contadorPuntos.textContent = 'Actualmente ' + nombreUsuario + ' tiene puntos: ' + puntos;
+    }
+
+    // Función para actualizar el highscore
+    function actualizarHighscore() {
+        if (puntos > highscore.score) {
+            highscore = { score: puntos, user: nombreUsuario };
+            localStorage.setItem('highscore', JSON.stringify(highscore));
+            highscoreHistorico.textContent = 'El highscore es ' + highscore.score + ' por ' + highscore.user + '.';
+        }
+    }
+
+    // Función para manejar el clic en el área de juego
+    function manejarClicEnZonaDeJuego(event) {
+        if (!event.target.classList.contains('punto')) {
+            alert('Tu puntaje fue de: ' + puntos);
+            puntos = 0;
+            actualizarContador();
+            resetearJuego();
+        }
+    }
+
+    // Función para manejar el ingreso del nombre de usuario
+    function manejarIngresoUsuario() {
         nombreUsuario = inputUsuario.value.trim();
 
         if (nombreUsuario) {
-            // Almacenar nombre de usuario en localStorage
             localStorage.setItem('nombreUsuario', nombreUsuario);
-            
-            mensajeBienvenida.textContent = `¡Bienvenido, ${nombreUsuario}!`;
+            mensajeBienvenida.textContent = '¡Bienvenido, ' + nombreUsuario + '!';
             inputUsuario.value = '';
-
-            // Resetear puntos
             puntos = 0;
-            contadorPuntos.textContent = `Actualmente, ${nombreUsuario} tiene ${puntos} puntos.`;
+            actualizarContador();
         } else {
             mensajeBienvenida.textContent = 'Por favor, ingresa un nombre.';
         }
-    });
+    }
 
-    // Botón de resetear el contador
-    botonReset.addEventListener('click', () => {
+    // Función para manejar el clic en el botón de resetear
+    function manejarReset() {
         if (nombreUsuario) {
             puntos = 0;
-            contadorPuntos.textContent = `Actualmente, ${nombreUsuario} tiene ${puntos} puntos.`;
+            actualizarContador();
         }
-    });
+    }
+
+    // Configuración de eventos
+    zonaDeJuego.addEventListener('click', manejarClicEnZonaDeJuego);
+    botonEnviar.addEventListener('click', manejarIngresoUsuario);
+    botonReset.addEventListener('click', manejarReset);
+
+    // Inicialización del juego
+    crearPunto();
+
+    // Mostrar el nombre de usuario y el contador de puntos si hay un nombre almacenado
+    if (nombreUsuario) {
+        mensajeBienvenida.textContent = '¡Bienvenido de nuevo, ' + nombreUsuario + '!';
+        actualizarContador();
+    }
+
+    // Mostrar el highscore almacenado
+    highscoreHistorico.textContent = 'El highscore es ' + highscore.score + ' por ' + highscore.user + '.';
 });
